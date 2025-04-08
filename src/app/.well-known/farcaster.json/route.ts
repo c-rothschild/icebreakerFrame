@@ -11,7 +11,7 @@ export async function GET() {
     },
     frame: {
       version: "1",
-      name: "Frames v2 Demo",
+      name: "Icebreaker Frame",
       iconUrl: `${appUrl}/icon.png`,
       homeUrl: appUrl,
       imageUrl: `${appUrl}/image.png`,
