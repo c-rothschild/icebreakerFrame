@@ -4,7 +4,8 @@ export async function GET(
   request: Request,
   { params }: { params: { fname: string } }
 ) {
-  const fname = params.fname;
+  // Await the params object before accessing fname
+  const { fname } = await params;
   
   try {
     const response = await fetch(`https://app.icebreaker.xyz/api/v1/fname/${fname}/`, {

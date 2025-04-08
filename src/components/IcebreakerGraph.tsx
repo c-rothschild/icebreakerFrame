@@ -23,7 +23,17 @@ interface GraphProps {
   connections: ProfileNode[];
 }
 
-export const IcebreakerGraph: React.FC<GraphProps> = ({ profile, connections }) => {
+// Define types for d3 drag event
+interface DragEvent {
+  active: boolean;
+  x: number;
+  y: number;
+}
+
+// Import the d3-drag types
+import { D3DragEvent } from 'd3';
+
+export const IcebreakerGraph = ({ profile, connections }: GraphProps): React.ReactElement | undefined => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -32,8 +42,8 @@ export const IcebreakerGraph: React.FC<GraphProps> = ({ profile, connections }) 
   
   useEffect(() => {
     // Safety checks
-    if (!svgRef.current || !containerRef.current || !profile) return;
-    if (!displayedConnections || displayedConnections.length === 0) return;
+    if (!svgRef.current || !containerRef.current || !profile) return undefined;
+    if (!displayedConnections || displayedConnections.length === 0) return undefined;
     
     try {
       // Get container dimensions
@@ -98,22 +108,22 @@ export const IcebreakerGraph: React.FC<GraphProps> = ({ profile, connections }) 
         .selectAll('.node')
         .data(nodes)
         .join('g')
-        .attr('class', d => `node ${d.type}-node`);
+        .attr('class', 'node');
       
       // Setup drag behavior
       const drag = (simulation: d3.Simulation<ProfileNode, undefined>) => {
-        function dragstarted(event: any, d: ProfileNode) {
+        function dragstarted(event: D3DragEvent<SVGGElement, ProfileNode, unknown>, d: ProfileNode) {
           if (!event.active) simulation.alphaTarget(0.3).restart();
           d.fx = d.x;
           d.fy = d.y;
         }
         
-        function dragged(event: any, d: ProfileNode) {
+        function dragged(event: D3DragEvent<SVGGElement, ProfileNode, unknown>, d: ProfileNode) {
           d.fx = event.x;
           d.fy = event.y;
         }
         
-        function dragended(event: any, d: ProfileNode) {
+        function dragended(event: D3DragEvent<SVGGElement, ProfileNode, unknown>, d: ProfileNode) {
           if (!event.active) simulation.alphaTarget(0);
           if (d.type !== 'main') {
             d.fx = null;
@@ -128,7 +138,7 @@ export const IcebreakerGraph: React.FC<GraphProps> = ({ profile, connections }) 
       };
       
       // Apply drag behavior
-      node.call(drag(simulation) as any);
+      (node as any).call(drag(simulation));
       
       // Add circles for nodes
       node.append('circle')
@@ -190,26 +200,22 @@ export const IcebreakerGraph: React.FC<GraphProps> = ({ profile, connections }) 
         .text(d => d.displayName || (d.type === 'main' ? 'User' : 'Connection'))
         .each(function(this: SVGTextElement) {
           try {
-            // Safely truncate text if too long
-            const element = this;
-            if (!element) return;
-            
-            const textElement = d3.select(element);
-            const data = d3.select(element).datum() as ProfileNode;
+            const textElement = d3.select(this);
+            const data = textElement.datum() as ProfileNode;
             if (!data) return;
             
             const text = textElement.text() || '';
             const maxWidth = data.type === 'main' ? 70 : 60;
             
             // Only try to truncate if we can get computed text length
-            if (element.getComputedTextLength && element.getComputedTextLength() > maxWidth) {
+            if (this.getComputedTextLength && this.getComputedTextLength() > maxWidth) {
               let truncatedText = text;
               // Safely truncate with a limit on iterations
               let iterations = 0;
               const maxIterations = 100; // Prevent infinite loops
               
               while (truncatedText.length > 3 && 
-                     element.getComputedTextLength() > maxWidth && 
+                     this.getComputedTextLength() > maxWidth && 
                      iterations < maxIterations) {
                 truncatedText = truncatedText.slice(0, -1);
                 textElement.text(truncatedText + '...');
@@ -275,7 +281,7 @@ export const IcebreakerGraph: React.FC<GraphProps> = ({ profile, connections }) 
       console.error("Error in IcebreakerGraph:", error);
       return () => {};
     }
-  }, [profile, displayedConnections]);
+  }, [profile, displayedConnections, connections.length]); // Added connections.length as a dependency
   
   return (
     <div className="social-graph-container mt-4">

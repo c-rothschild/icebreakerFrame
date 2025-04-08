@@ -4,8 +4,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { credentialName: string } }
 ) {
-  // Get the raw credential name from params
-  const rawCredentialName = params.credentialName;
+  // First await the params object to access the dynamic route parameter
+  const { credentialName: rawCredentialName } = await params;
   
   // URL-encode the credential name to handle special characters
   const encodedCredentialName = encodeURIComponent(rawCredentialName);

@@ -768,9 +768,9 @@ interface IcebreakerProfile {
   channels: Channel[];
   credentials: Credential[];
   events: Event[];
-  highlights?: any[];
-  workExperience?: any[];
-  guilds?: any[];
+  highlights?: string[];
+  workExperience?: string[];
+  guilds?: string[];
 }
 
 interface IcebreakerData {
@@ -819,7 +819,7 @@ function ViewIcebreaker() {
   
   // Add state for connections
   const [connections, setConnections] = useState<IcebreakerProfile[]>([]);
-  const [connectionsLoading, setConnectionsLoading] = useState(false);
+  const connectionsLoading = useState(false);
   
   // Add state to track the selected credential name
   const [selectedCredentialName, setSelectedCredentialName] = useState<string>("");
@@ -1005,7 +1005,7 @@ function ViewIcebreaker() {
             <div className="mt-4">
               <h3 className="text-sm font-semibold mb-2">
                 {selectedCredentialName ? 
-                  `Network of Profiles Sharing the Credential "${selectedCredentialName}"` : 
+                  `Network of Profiles Sharing the Credential &quot;${selectedCredentialName}&quot;` : 
                   "Credential Network"
                 }
               </h3>
@@ -1017,7 +1017,7 @@ function ViewIcebreaker() {
           {!connectionsLoading && connections.length === 0 && selectedCredentialName && (
             <div className="mt-4">
               <h3 className="text-sm font-semibold mb-2">
-                Network of Profiles Sharing the Credential "{selectedCredentialName}"
+                Network of Profiles Sharing the Credential &quot;{selectedCredentialName}&quot;
               </h3>
               <div className="bg-gray-50 p-6 rounded-lg text-center text-gray-500 border border-gray-200">
                 No connections found for this credential
