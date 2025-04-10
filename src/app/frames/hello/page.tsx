@@ -1,35 +1,41 @@
 import { Metadata } from "next";
 import App from "~/app/app";
 
-const appUrl = process.env.NEXT_PUBLIC_URL;
+// Ensure this URL is correct and accessible
+const appUrl = process.env.NEXT_PUBLIC_URL || "https://your-actual-deployed-url.com";
 
+// Define the frame metadata according to Farcaster specs
 const frame = {
-  version: "next",
-  imageUrl: `${appUrl}/flappy_image.png`,
-  button: {
-    title: "Play Now!",
-    action: {
-      type: "launch_frame",
-      name: "Flappy Man",
-      url: `${appUrl}/frames/hello/`,
-      splashImageUrl: `${appUrl}/flappy_icon.png`,
-      splashBackgroundColor: "#f7f7f7",
-    },
-  },
+  version: "vNext",
+  image: `${appUrl}/flappy_image.png`,
+  buttons: [
+    {
+      label: "Play Now!",
+      action: "post"
+    }
+  ],
+  postUrl: `${appUrl}/api/frame-action`
 };
 
 export const metadata: Metadata = {
-  title: "Hello, world!",
-  description: "A simple hello world frame",
+  title: "Flappy Bird Game",
+  description: "Play Flappy Bird on Farcaster",
   openGraph: {
-    title: "Hello, world!",
-    description: "A simple hello world frame",
+    title: "Flappy Bird Game",
+    description: "Play Flappy Bird on Farcaster",
+    images: [{
+      url: `${appUrl}/flappy_image.png`,
+    }],
   },
   other: {
-    "fc:frame": JSON.stringify(frame),
+    // Properly format according to Farcaster Frame format
+    "fc:frame": "vNext",
+    "fc:frame:image": `${appUrl}/flappy_image.png`,
+    "fc:frame:button:1": "Play Now!",
+    "fc:frame:post_url": `${appUrl}/api/frame-action`
   },
 };
 
 export default function HelloFrame() {
-  return <App title={"Hello, world!"} />;
+  return <App title={"Flappy Bird"} />;
 }
