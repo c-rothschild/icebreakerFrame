@@ -4,19 +4,6 @@ import App from "~/app/app";
 // Ensure this URL is correct and accessible
 const appUrl = process.env.NEXT_PUBLIC_URL || "https://your-actual-deployed-url.com";
 
-// Define the frame metadata according to Farcaster specs
-const frame = {
-  version: "vNext",
-  image: `${appUrl}/flappy_image.png`,
-  buttons: [
-    {
-      label: "Play Now!",
-      action: "post"
-    }
-  ],
-  postUrl: `${appUrl}/api/frame-action`
-};
-
 export const metadata: Metadata = {
   title: "Flappy Bird Game",
   description: "Play Flappy Bird on Farcaster",
