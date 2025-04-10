@@ -262,6 +262,12 @@ const FlappyBird: React.FC<FlappyBirdProps> = ({ width = 350, height = 600 }) =>
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
+    // Update canvas dimensions if they've changed
+    if (canvas.width !== CANVAS_WIDTH || canvas.height !== CANVAS_HEIGHT) {
+      canvas.width = CANVAS_WIDTH;
+      canvas.height = CANVAS_HEIGHT;
+    }
+    
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -305,24 +311,47 @@ const FlappyBird: React.FC<FlappyBirdProps> = ({ width = 350, height = 600 }) =>
         cancelAnimationFrame(requestIdRef.current);
       }
     };
-  }, [gameStarted, gameOver, bird, pipes, score]);
+  }, [gameStarted, gameOver, bird, pipes, score, canvasSize]);
+
+  // Add this useEffect to handle responsive sizing
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        const containerWidth = window.innerWidth;
+        const containerHeight = window.innerHeight;
+        
+        // Update canvas size state
+        setCanvasSize({
+          width: containerWidth,
+          height: containerHeight
+        });
+        
+        // Also update the bird position when resizing
+        setBird(prev => ({
+          ...prev,
+          y: containerHeight / 2.5
+        }));
+      }
+    };
+    
+    // Set initial size
+    updateSize();
+    
+    // Update on resize
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
   
   return (
-    <div ref={containerRef} className="flex flex-col items-center mt-4">
+    <div ref={containerRef} className="flex flex-col items-center w-full h-screen">
       <canvas 
         ref={canvasRef}
         width={CANVAS_WIDTH}
         height={CANVAS_HEIGHT}
         onClick={jump}
-        className="border border-gray-300 rounded-lg cursor-pointer"
+        className="w-full h-full border-0 touch-manipulation"
+        style={{ touchAction: "manipulation" }}
       />
-      <div className="mt-2 text-sm">
-        {!gameStarted 
-          ? "Click to start" 
-          : gameOver 
-            ? "Game Over! Click to restart" 
-            : "Click to jump"}
-      </div>
     </div>
   );
 };
