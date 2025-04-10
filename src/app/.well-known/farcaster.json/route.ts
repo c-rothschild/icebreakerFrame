@@ -14,7 +14,7 @@ export async function GET() {
       name: "Flappy Man",
       iconUrl: `${appUrl}/flappy_icon.png`,
       homeUrl: appUrl,
-      imageUrl: `${appUrl}/fappy_image.png`,
+      imageUrl: `${appUrl}/flappy_image.png`,
       buttonTitle: "Play Now!",
       splashImageUrl: `${appUrl}/flappy_icon.png`,
       splashBackgroundColor: "#f7f7f7",
