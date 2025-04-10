@@ -5,14 +5,14 @@ const appUrl = process.env.NEXT_PUBLIC_URL;
 
 const frame = {
   version: "next",
-  imageUrl: `${appUrl}/image.png`,
+  imageUrl: `${appUrl}/flappy_image.png`,
   button: {
-    title: "Launch Frame",
+    title: "Play Now!",
     action: {
       type: "launch_frame",
-      name: "Icebreaker Frame",
+      name: "Flappy Man",
       url: appUrl,
-      splashImageUrl: `${appUrl}/icon.png`,
+      splashImageUrl: `${appUrl}/flappy_icon.png`,
       splashBackgroundColor: "#f7f7f7",
     },
   },

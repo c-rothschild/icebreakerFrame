@@ -12,7 +12,7 @@ const frame = {
       type: "launch_frame",
       name: "Flappy Man",
       url: `${appUrl}/frames/hello/`,
-      splashImageUrl: `${appUrl}/icon.png`,
+      splashImageUrl: `${appUrl}/flappy_icon.png`,
       splashBackgroundColor: "#f7f7f7",
     },
   },
