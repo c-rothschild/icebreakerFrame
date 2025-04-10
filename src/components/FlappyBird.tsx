@@ -16,16 +16,23 @@ interface Pipe {
   passed: boolean;
 }
 
-const FlappyBird: React.FC = () => {
+interface FlappyBirdProps {
+  width?: number;
+  height?: number;
+}
+
+const FlappyBird: React.FC<FlappyBirdProps> = ({ width = 350, height = 600 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+  const [canvasSize, setCanvasSize] = useState({ width, height });
   
   // Game state
   const [bird, setBird] = useState<Bird>({
-    y: 150,
+    y: height / 2.5,
     velocity: 0,
     width: 30,
     height: 24
@@ -40,8 +47,8 @@ const FlappyBird: React.FC = () => {
   const PIPE_WIDTH = 50;
   const PIPE_GAP = 150;
   const PIPE_SPAWN_INTERVAL = 120;
-  const CANVAS_WIDTH = 300;
-  const CANVAS_HEIGHT = 400;
+  const CANVAS_WIDTH = canvasSize.width;
+  const CANVAS_HEIGHT = canvasSize.height;
   
   // Frame counting for pipe spawning
   const frameCountRef = useRef(0);
@@ -220,7 +227,7 @@ const FlappyBird: React.FC = () => {
       setGameOver(false);
       setScore(0);
       setBird({
-        y: 150,
+        y: height / 2.5,
         velocity: 0,
         width: 30,
         height: 24
@@ -238,7 +245,7 @@ const FlappyBird: React.FC = () => {
       setGameOver(false);
       setScore(0);
       setBird({
-        y: 150,
+        y: height / 2.5,
         velocity: 0,
         width: 30,
         height: 24
@@ -301,7 +308,7 @@ const FlappyBird: React.FC = () => {
   }, [gameStarted, gameOver, bird, pipes, score]);
   
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div ref={containerRef} className="flex flex-col items-center mt-4">
       <canvas 
         ref={canvasRef}
         width={CANVAS_WIDTH}
